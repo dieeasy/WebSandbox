@@ -3,6 +3,14 @@ if ('serviceWorker' in navigator) {
         // registration worked
         console.log('Registration succeeded. Scope is ' + registration.scope);
 
+        console.log( registration.installing,registration.waiting, registration.active)
+        navigator.serviceWorker.controller.postMessage('serviceWorker register succeed!!!')
+
+
+        navigator.serviceWorker.addEventListener('message', function (e) {
+            console.log('main thread got message:',e)
+        })
+
         registration.addEventListener('updatefound', function() {
             // If updatefound is fired, it means that there's
             // a new service worker being installed.
@@ -37,4 +45,9 @@ function doFetch() {
         .then(response => response.json())
         .then(data => console.log(data));
 
+}
+
+
+function sendMessage() {
+    navigator.serviceWorker.controller.postMessage('hey you')
 }
