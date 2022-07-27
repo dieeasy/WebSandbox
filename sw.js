@@ -4,14 +4,23 @@ self.addEventListener('install', function(event) {
 
 self.addEventListener('activate', function(event) {
     console.error('sw activate,123456')
+    self.clients.matchAll().then(function(clients){
+        console.error(clients)
+
+    });
+
 });
 
 
 self.addEventListener('message', function(event) {
     console.error('sw got message',event)
 
-    self.clients.matchAll().then(function(clients){
-        console.error(clients)
+    // self.clients.matchAll().then(function(clients){
+    //     console.error(clients)
+    // });
+    console.error(event.source.id)
+    self.clients.get(event.source.id).then(function(client) {
+        client.postMessage("copy ! :"+event.data);
     });
 });
 
