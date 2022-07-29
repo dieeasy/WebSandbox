@@ -3,12 +3,8 @@ self.addEventListener('install', function(event) {
 });
 
 self.addEventListener('activate', function(event) {
-    console.error('sw activate,123456')
-    self.clients.matchAll().then(function(clients){
-        console.error(clients)
-
-    });
-
+    console.error('sw activate')
+    self.clients.claim();
 });
 
 

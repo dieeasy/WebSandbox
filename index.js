@@ -3,28 +3,40 @@ if ('serviceWorker' in navigator) {
         // registration worked
         console.log('Registration succeeded. Scope is ' + registration.scope);
 
-        console.log( registration.installing,registration.waiting, registration.active)
-        navigator.serviceWorker.controller.postMessage('serviceWorker register succeed!!!')
+        console.log(registration.active ,registration.installing, registration.waiting )
+        if (registration.active) {
+            //loadSandbox();
+            navigator.serviceWorker.controller.postMessage('serviceWorker register succeed!!!')
+        }else if(registration.installing){
+            registration.installing.addEventListener('statechange', function (ev) {
+                if (ev.target.state === 'activated') {
+                    navigator.serviceWorker.controller.postMessage('serviceWorker register succeed!!!')
+                    console.log('installing activated ready')
+                }
+            });
+        }else if(registration.waiting){
+            // update situation ignored
+        }
 
 
         navigator.serviceWorker.addEventListener('message', function (e) {
             console.log('main thread got message:',e)
         })
 
-        registration.addEventListener('updatefound', function() {
-            // If updatefound is fired, it means that there's
-            // a new service worker being installed.
-            const installingWorker = registration.installing;
-            console.log('A new service worker is being installed:',
-                installingWorker);
-
-            installingWorker.onstatechange = function () {
-                console.log('new service worker onstatechange', installingWorker.state)
-            }
-
-            // You can listen for changes to the installing service worker's
-            // state via installingWorker.onstatechange
-        });
+        // registration.addEventListener('updatefound', function() {
+        //     // If updatefound is fired, it means that there's
+        //     // a new service worker being installed.
+        //     const installingWorker = registration.installing;
+        //     console.log('A new service worker is being installed:',
+        //         installingWorker);
+        //
+        //     installingWorker.onstatechange = function () {
+        //         console.log('new service worker onstatechange', installingWorker.state)
+        //     }
+        //
+        //     // You can listen for changes to the installing service worker's
+        //     // state via installingWorker.onstatechange
+        // });
 
     }).catch(function(error) {
         // registration failed
