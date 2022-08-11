@@ -42,7 +42,7 @@ function sandbox() {
 
 function syncSendMessageToServiceWorker(body) {
     const xhr = new XMLHttpRequest();
-    xhr.open('POST', './sandbox-fake-sync-url.html', true);
+    xhr.open('POST', './sandbox-fake-sync-url.html', false);
     xhr.send(JSON.stringify(body));
     // look ma, i'm synchronous (•‿•)
     return xhr.responseText;

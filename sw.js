@@ -17,26 +17,25 @@ self.addEventListener('message', function (event) {
 });
 
 
-self.addEventListener('fetch', async function (event) {
+self.addEventListener('fetch', function (event) {
     const request = event.request
     console.error('sw fetch :', event.request)
 
-    const responseBody = {}
-
     if (event.request.url.endsWith('sandbox-fake-sync-url.html')) {
-        try {
-            const {args, code} = await request.clone().json()
 
+        event.respondWith(request.clone().json().then(body => {
+            const {args, code} = body
             const handler = new Function('return ' + code)()
-            responseBody.result = handler(...args)
-        } catch (e) {
-            responseBody.error = e
-        }
-        event.respondWith(new Response(JSON.stringify(responseBody),{headers:{
-                'status' : 200,
+            return {result: handler(...args)}
+        }).catch(e => {
+            return {error: e}
+        }).then(responseBody => new Response(JSON.stringify(responseBody), {
+            headers: {
+                'status': 200,
                 'content-type': 'application/json',
                 'Cache-Control': 'no-store',
-            }}));
+            }
+        })));
     } else {
         event.respondWith(fetch(event.request))
     }
